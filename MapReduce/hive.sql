@@ -1,4 +1,4 @@
-ADD JAR /opt/hive/lib/opencsv-5.9.jar;
+--ADD JAR /opt/hive/lib/opencsv-5.9.jar;
 
 DROP TABLE IF EXISTS sales_stats;
 
