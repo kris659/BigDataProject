@@ -13,7 +13,7 @@ with DAG(
             "~/airflow/dags/", type="string"
         ),
         "input_dir": Param(
-            "project_files/input", type="string"
+            "/project1/input", type="string"
         ),
         "output_mr_dir": Param("/project1/output_mr3", type="string"),
         "output_dir": Param("/project1/output6", type="string"),
@@ -59,7 +59,7 @@ with DAG(
     mapreduce_classic = BashOperator(
         task_id="mapreduce_classic",
         bash_command=(
-            "hadoop jar SalesStatsMapReduce.jar -D \"mapreduce.output.textoutputformat.separator=,\" {{ params.input_dir }}/datasource1 {{ params.output_mr_dir }}"
+            "hadoop jar {{ params.dags_home }}/project_files/SalesStatsMapReduce.jar -D \"mapreduce.output.textoutputformat.separator=,\" {{ params.input_dir }}/datasource1 {{ params.output_mr_dir }}"
         ),
     )
 
@@ -76,12 +76,12 @@ with DAG(
     hive = BashOperator(
         task_id="hive",
         bash_command=(
-            "beeline -u jdbc:hive2://localhost:10000/default \"
-            "-n hadoop \"
-            "--hivevar input_dir3={{ params.output_mr_dir }} \"
-            "--hivevar input_dir4={{ params.input_dir }}/datasource4 \"
-            "--hivevar output_dir6={{ params.output_dir }} \"
-            "-f hive.sql"
+            "beeline -u jdbc:hive2://localhost:10000/default \\"
+            "-n hadoop \\"
+            "--hivevar input_dir3={{ params.output_mr_dir }} \\"
+            "--hivevar input_dir4={{ params.input_dir }}/datasource4 \\"
+            "--hivevar output_dir6={{ params.output_dir }} \\"
+            "-f {{ params.dags_home }}/project_files/hive.sql"
         ),
         trigger_rule="none_failed",
     )
